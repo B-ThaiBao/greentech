@@ -31,6 +31,7 @@ public class UIManagement : MonoBehaviour {
     public RectTransform backMainMenuButton;
     public RectTransform joystick;
     public RectTransform scaleSlider;
+    public RectTransform toggleButton;
 
     public float panelScaleDuration = 0.6f;
     public float cameraRotateDuration = 0.6f;
@@ -154,11 +155,13 @@ public class UIManagement : MonoBehaviour {
         backMainMenuButton.gameObject.SetActive(true);
         joystick.gameObject.SetActive(true);
         scaleSlider.gameObject.SetActive(true);
+        toggleButton.gameObject.SetActive(true);
         AnimateElementHigh(footerSettings, 0);
         AnimateElementHigh(settingsTitle, 1);
         AnimateElementHigh(backMainMenuButton, 2);
         AnimateElementHigh(joystick, 3);
         AnimateElementHigh(scaleSlider, 4);
+        AnimateElementHigh(toggleButton, 5);
 
         onComplete?.Invoke();
     }
@@ -173,9 +176,13 @@ public class UIManagement : MonoBehaviour {
         });
         LeanTween.scale(scaleSlider, Vector3.zero, panelScaleDuration).setEaseInQuad().setOnComplete(() => {
             scaleSlider.gameObject.SetActive(false);
+            LeanTween.scale(scaleSlider, Vector3.one, panelScaleDuration);
+        });
+        LeanTween.scale(toggleButton, Vector3.zero, panelScaleDuration).setEaseInQuad().setOnComplete(() => {
+            toggleButton.gameObject.SetActive(false);
 
             onComplete?.Invoke();
-            LeanTween.scale(scaleSlider, Vector3.one, panelScaleDuration);
+            LeanTween.scale(toggleButton, Vector3.one, panelScaleDuration);
         });
     }
 
