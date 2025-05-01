@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class UIManagement : MonoBehaviour {
     private static int currentPageIndex = 0;
+    // Main camera
+    public Transform mainCamera;
     // Main menu
     public RectTransform mainMenuPanel;
     public RectTransform greentechLogo;
@@ -21,6 +23,7 @@ public class UIManagement : MonoBehaviour {
     public RectTransform backOptionsButton;
     public RectTransform animalsList;
     public RectTransform settingsButton;
+    public RectTransform artechButton;
 
     // Settings Page
     public RectTransform footerSettings;
@@ -30,15 +33,22 @@ public class UIManagement : MonoBehaviour {
     public RectTransform scaleSlider;
 
     public float panelScaleDuration = 0.6f;
+    public float cameraRotateDuration = 0.6f;
     public float elementMoveDuration = 0.5f;
     public float elementDelay = 0.15f;
     public float elementLowOffsetY = -1800f;
     public float elementHighOffsetY = 2500f;
     void Start() {
-        if (currentPageIndex == 0) LoadMainMenu();
-        else if (currentPageIndex == 1) LoadOptions();
-        else if (currentPageIndex == 2) LoadModelsPage();
-        else if (currentPageIndex == 3) LoadSettingsPage();
+        float currentCameraX = mainCamera.eulerAngles.x;
+        if (currentCameraX > 180f) currentCameraX -= 360f;
+        float startCameraX = currentCameraX - 45f;
+        mainCamera.rotation = Quaternion.Euler(startCameraX, mainCamera.eulerAngles.y, mainCamera.eulerAngles.z);
+        LeanTween.rotateX(mainCamera.gameObject, currentCameraX, cameraRotateDuration).setEaseOutBack().setOnComplete(() => {
+            if (currentPageIndex == 0) LoadMainMenu();
+            else if (currentPageIndex == 1) LoadOptions();
+            else if (currentPageIndex == 2) LoadModelsPage();
+            else if (currentPageIndex == 3) LoadSettingsPage();
+        });
     }
     public void LoadMainMenu(System.Action onComplete = null) {
         currentPageIndex = 0;
@@ -106,11 +116,13 @@ public class UIManagement : MonoBehaviour {
         backOptionsButton.gameObject.SetActive(true);
         animalsList.gameObject.SetActive(true);
         settingsButton.gameObject.SetActive(true);
+        artechButton.gameObject.SetActive(true);
         AnimateElementHigh(footerModels, 0);
         AnimateElementHigh(modelsTitle, 1);
         AnimateElementHigh(backOptionsButton, 2);
         AnimateElementHigh(animalsList, 3);
         AnimateElementHigh(settingsButton, 4);
+        AnimateElementHigh(artechButton, 5);
 
         onComplete?.Invoke();
     }
@@ -125,9 +137,13 @@ public class UIManagement : MonoBehaviour {
         });
         LeanTween.scale(settingsButton, Vector3.zero, panelScaleDuration).setEaseInQuad().setOnComplete(() => {
             settingsButton.gameObject.SetActive(false);
+            LeanTween.scale(settingsButton, Vector3.one, panelScaleDuration);
+        });
+        LeanTween.scale(artechButton, Vector3.zero, panelScaleDuration).setEaseInQuad().setOnComplete(() => {
+            artechButton.gameObject.SetActive(false);
 
             onComplete?.Invoke();
-            LeanTween.scale(settingsButton, Vector3.one, panelScaleDuration);
+            LeanTween.scale(artechButton, Vector3.one, panelScaleDuration);
         });
     }
 
